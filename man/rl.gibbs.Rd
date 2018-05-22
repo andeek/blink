@@ -5,7 +5,7 @@
 \title{Gibbs sampler for empirically motivated Bayesian record linkage}
 \usage{
 rl.gibbs(file.num = file.num, X.s = X.s, X.c = X.c, num.gs = num.gs,
-  a = a, b = b, c = c, d = d, M = M)
+  a = a, b = b, c = c, d = d, M = M, lam.init = NULL)
 }
 \arguments{
 \item{file.num}{The number of the file}
@@ -25,6 +25,10 @@ rl.gibbs(file.num = file.num, X.s = X.s, X.c = X.c, num.gs = num.gs,
 \item{d}{Any distance metric measuring the latent and observed string}
 
 \item{M}{The true value of the population size}
+
+\item{lam.init}{Initialization value for lambda, a vector of cluster labels of length equal to the
+number of rows in the dataset. Default value is NULL, which defines each record to
+be in its own cluster (up to M).}
 }
 \value{
 lambda.out The estimated linkage structure via Gibbs sampling

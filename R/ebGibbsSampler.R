@@ -31,6 +31,9 @@
 #' @param c Positive constant
 #' @param d Any distance metric measuring the latent and observed string
 #' @param M The true value of the population size
+#' @param lam.init Initialization value for lambda, a vector of cluster labels of length equal to the
+#'                 number of rows in the dataset. Default value is NULL, which defines each record to
+#'                 be in its own cluster (up to M).
 #' @return lambda.out The estimated linkage structure via Gibbs sampling
 #' @export
 
@@ -44,16 +47,27 @@
 #' d <- function(string1,string2){adist(string1,string2)}
 #' lam.gs <- rl.gibbs(file.num,X.s,X.c,num.gs=2,a=.01,b=100,c=1,d, M=3)
 
-
-rl.gibbs <- function(file.num=file.num,X.s=X.s,X.c=X.c,num.gs=num.gs,a=a,b=b,c=c,d=d,M=M)
+rl.gibbs <- function(file.num=file.num,X.s=X.s,X.c=X.c,num.gs=num.gs,a=a,b=b,c=c,d=d,M=M, lam.init=NULL)
 {
-
 
 	# Get dimensions
 	k <- length(unique(file.num))
 	N <- length(file.num)
 	if(dim(X.s)[1]!=N || dim(X.c)[1]!=N){
 		stop("length of file identifier does not match length of record data")
+	}
+	if(is.null(lam.init)) {
+	  # Use the modulus to take off the remainder if N >= M
+	  # (That is you have more records than latent entities)
+	  # If M > N, then we simply just take 1:N
+	  lambda <- (1:N)%%M
+	  lambda[lambda==0] <- M
+	} else if(length(lam.init) != N) {
+	  stop("lam.init must be same length as number of records")
+	} else if(!is.numeric(lam.init)) {
+	  stop("lam.init must be numeric cluster labels")
+	} else {
+	  lambda <- lam.init
 	}
 	n <- table(file.num)
 	p.s <- dim(X.s)[2]
@@ -118,14 +132,6 @@ rl.gibbs <- function(file.num=file.num,X.s=X.s,X.c=X.c,num.gs=num.gs,a=a,b=b,c=c
 		Y.s[i,] <- X.s[temp,]
 		Y.c[i,] <- X.c[temp,]
 	}
-
-
-
-	# Use the modulus to take off the remainder if N >= M
-	# (That is you have more records than latent entities)
-	# If M > N, then we simply just take 1:N
-	lambda <- (1:N)%%M
-	lambda[lambda==0] <- M
 
 	# Storage for final values (not yet writing to file)
 	# beta.out <-
