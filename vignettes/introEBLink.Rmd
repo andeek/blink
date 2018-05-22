@@ -81,17 +81,17 @@ For the steepness parameter, we recommend
 c <- 1
 ```
 
-## The Gibbs Sampler for bLink
-We now run a test version of the Gibbs sampler using bLink, with 10 Gibbs iterations and a maximum size of M=500 (assuming the overall known population size is 500).
+## The Gibbs Sampler for blink
+We now run a test version of the Gibbs sampler using blink, with 10 Gibbs iterations and a maximum size of M=500 (assuming the overall known population size is 500).
 
 ```{r,results="hide"}
 #source('ebGibbsSampler.R', chdir = TRUE)
-library(bLink)
+library(blink)
 library(plyr)
 system.time(lam.gs <- rl.gibbs(file.num=file.num,X.s=X.s,X.c=X.c,num.gs=2,a=a,b=b,c=c,d=d, M=500))
 ```
 
-## Summary information of bLink
+## Summary information of blink
 
 Let's read in the estimate linkage structure using 10 Gibbs iterations.
 
